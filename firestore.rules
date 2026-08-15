@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isMe(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Public username -> uid registry. Claimed once at signup, never
+    // edited or deleted from the client (usernames are permanent in v1).
+    match /usernames/{username} {
+      allow read: if isSignedIn();
+      allow create: if isMe(request.resource.data.uid);
+      allow update, delete: if false;
+    }
+
+    // User profiles. Readable by any signed-in user (needed for search,
+    // friends lists, and chat). Only the owner can write their own doc.
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isMe(uid) && request.resource.data.uid == uid;
+      allow update: if isMe(uid);
+      allow delete: if false;
+
+      match /friends/{friendUid} {
+        allow read: if isMe(uid);
+        // Either side of a friendship can create/delete the entry that
+        // names them — lets one client write both mirrored docs on accept.
+        allow create, delete: if isMe(uid) || isMe(friendUid);
+        allow update: if false;
+      }
+    }
+
+    // Friend requests — one doc per unordered pair (see src/lib/ids.js).
+    match /friendRequests/{requestId} {
+      allow read: if isSignedIn() &&
+        (request.auth.uid == resource.data.fromUid || request.auth.uid == resource.data.toUid);
+      allow create: if isMe(request.resource.data.fromUid) &&
+        request.resource.data.fromUid != request.resource.data.toUid &&
+        request.resource.data.status == 'pending';
+      allow update: if isSignedIn() &&
+        (request.auth.uid == resource.data.toUid || request.auth.uid == resource.data.fromUid) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'respondedAt']);
+      allow delete: if isSignedIn() &&
+        (request.auth.uid == resource.data.fromUid || request.auth.uid == resource.data.toUid);
+    }
+
+    // 1:1 chats, id = sorted pair of uids.
+    match /chats/{chatId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow create: if isSignedIn() &&
+        request.auth.uid in request.resource.data.participants &&
+        request.resource.data.participants.size() == 2;
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn() &&
+          request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        allow create: if isSignedIn() &&
+          request.auth.uid == request.resource.data.senderId &&
+          request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        // Recipients may only flip their own delivered/seen receipts —
+        // never edit text or senderId after the fact.
+        allow update: if isSignedIn() &&
+          request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['deliveredTo', 'seenBy']);
+        allow delete: if false;
+      }
+    }
+  }
+}
