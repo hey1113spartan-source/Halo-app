@@ -1,24 +1,27 @@
-@import url('https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500,600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&display=swap');
 
 .halo-root {
   --bg: #08090D;
   --bg-elev: #101219;
-  --glass-fill: rgba(255,255,255,0.045);
-  --glass-fill-strong: rgba(255,255,255,0.075);
-  --glass-border: rgba(255,255,255,0.09);
-  --text-primary: #EDEFF5;
-  --text-secondary: #9296A6;
-  --text-tertiary: #5B5E6E;
-  --accent-violet: #7C6CF0;
-  --accent-cyan: #2FE8D0;
-  --accent-amber: #F4B740;
-  --accent-rose: #F2678E;
+  --glass-fill: rgba(255,255,255,0.05);
+  --glass-fill-strong: rgba(255,255,255,0.085);
+  --glass-border: rgba(255,255,255,0.1);
+  --text-primary: #F5F6FB;
+  --text-secondary: #A0A4B8;
+  --text-tertiary: #666B82;
+  --accent-violet: #8A76FF;
+  --accent-cyan: #33FFDD;
+  --accent-amber: #FFC24B;
+  --accent-rose: #FF6FA0;
   --accent-green: #3DDC84;
   --aurora: linear-gradient(135deg, var(--accent-violet), var(--accent-cyan));
+  --glow-violet: 0 0 28px -4px rgba(138,118,255,0.65);
+  --glow-cyan: 0 0 28px -4px rgba(51,255,221,0.55);
   --font-display: 'Clash Display', 'General Sans', sans-serif;
   --font-body: 'General Sans', -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
 
   min-height: 100vh;
   background: var(--bg);
@@ -38,11 +41,13 @@
   max-width: 420px;
   min-height: 700px;
   background:
-    radial-gradient(120% 60% at 50% -10%, rgba(124,108,240,0.16), transparent 60%),
+    radial-gradient(130% 55% at 50% -12%, rgba(138,118,255,0.22), transparent 62%),
+    radial-gradient(90% 40% at 100% 100%, rgba(51,255,221,0.08), transparent 60%),
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0) 0 0/26px 26px,
     var(--bg);
   border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 50px 90px -30px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -53,6 +58,14 @@
   .halo-phone { border-radius: 22px; }
 }
 
+/* Gradient text — used for hero + a few standout numbers */
+.halo-gradient-text {
+  background: var(--aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Splash / loading */
 .halo-splash { flex: 1; display: flex; align-items: center; justify-content: center; }
 
@@ -61,238 +74,21 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 18px 12px;
   position: sticky; top: 0; z-index: 20;
-  background: linear-gradient(to bottom, rgba(8,9,13,0.92), rgba(8,9,13,0.4) 80%, transparent);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, rgba(8,9,13,0.94), rgba(8,9,13,0.5) 80%, transparent);
+  backdrop-filter: blur(12px);
 }
 .halo-topbar-left { display: flex; align-items: center; gap: 11px; min-width: 0; }
 .halo-topbar-title { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
-.halo-eyebrow { font-size: 11.5px; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.02em; }
-.halo-title-main { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.halo-eyebrow { font-size: 11.5px; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+.halo-title-main { font-family: var(--font-display); font-size: 18px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
 .halo-topbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .halo-icon-btn {
-  position: relative; width: 34px; height: 34px; border-radius: 12px;
+  position: relative; width: 36px; height: 36px; border-radius: 13px;
   display: flex; align-items: center; justify-content: center;
   background: var(--glass-fill); border: 1px solid var(--glass-border);
   color: var(--text-secondary); cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition: transform 0.2s var(--ease-spring), background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
-.halo-icon-btn:active { transform: scale(0.92); }
-.halo-icon-btn:hover { color: var(--text-primary); background: var(--glass-fill-strong); }
-.halo-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-rose); box-shadow: 0 0 6px var(--accent-rose); }
-.halo-badge {
-  position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; border-radius: 8px;
-  background: var(--accent-rose); color: #0A0A0F; font-size: 9.5px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; padding: 0 4px;
-}
-
-.halo-avatar-wrap { position: relative; flex-shrink: 0; display: inline-flex; }
-.halo-avatar {
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #3A3564, #1B3B3A);
-  color: var(--text-primary);
-  font-family: var(--font-display); font-weight: 600;
-  flex-shrink: 0; overflow: hidden;
-}
-.halo-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.halo-online-dot {
-  position: absolute; right: 0; bottom: 0; width: 11px; height: 11px; border-radius: 50%;
-  background: var(--accent-green); border: 2px solid var(--bg);
-}
-
-/* Main scroll area */
-.halo-main { flex: 1; overflow-y: auto; padding: 4px 18px 100px; animation: haloFadeIn 0.4s ease; }
-@keyframes haloFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.halo-screen { display: flex; flex-direction: column; gap: 22px; padding-top: 6px; }
-
-/* Hero */
-.halo-hero { position: relative; padding: 18px 2px 6px; overflow: hidden; }
-.halo-hero-eyebrow { font-size: 12px; color: var(--text-tertiary); margin: 0 0 6px; font-weight: 500; }
-.halo-hero-title { font-family: var(--font-display); font-size: 27px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
-.halo-hero-sub { font-size: 13.5px; color: var(--text-secondary); margin: 0; max-width: 240px; }
-
-.halo-orb-ambient { position: absolute; inset: -40px -20px auto auto; width: 220px; height: 220px; z-index: 0; pointer-events: none; }
-.halo-orb-blob { position: absolute; border-radius: 50%; filter: blur(38px); opacity: 0.55; }
-.halo-orb-blob-a { width: 160px; height: 160px; top: 0; right: 10px; background: var(--accent-violet); animation: haloDrift 9s ease-in-out infinite; }
-.halo-orb-blob-b { width: 120px; height: 120px; top: 50px; right: 60px; background: var(--accent-cyan); animation: haloDrift 11s ease-in-out infinite reverse; }
-@keyframes haloDrift { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-14px, 10px) scale(1.08); } }
-
-.halo-chip-row { display: flex; gap: 9px; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: none; position: relative; z-index: 1; }
-.halo-chip-row::-webkit-scrollbar { display: none; }
-.halo-chip {
-  flex-shrink: 0; display: flex; align-items: center; gap: 7px;
-  padding: 9px 14px; border-radius: 100px;
-  background: var(--glass-fill); border: 1px solid var(--glass-border);
-  color: var(--text-primary); font-size: 12.5px; font-weight: 500;
-  cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
-}
-.halo-chip:active { transform: scale(0.95); }
-.halo-chip-icon { display: flex; color: var(--accent-cyan); }
-
-.halo-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.halo-section-header h2 { font-family: var(--font-display); font-size: 15px; font-weight: 600; margin: 0; }
-.halo-link { display: flex; align-items: center; gap: 2px; background: none; border: none; color: var(--text-tertiary); font-size: 12px; cursor: pointer; padding: 0; }
-
-.halo-card { background: var(--glass-fill); border: 1px solid var(--glass-border); border-radius: 20px; transition: transform 0.15s ease, background 0.15s ease; }
-.halo-card:active { transform: scale(0.985); }
-
-.halo-hscroll { display: flex; gap: 12px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
-.halo-hscroll::-webkit-scrollbar { display: none; }
-.halo-watch-card { flex-shrink: 0; width: 168px; padding: 12px; cursor: pointer; }
-.halo-watch-thumb {
-  width: 100%; height: 84px; border-radius: 13px; margin-bottom: 10px;
-  background: linear-gradient(135deg, rgba(124,108,240,0.35), rgba(47,232,208,0.25));
-  display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.85);
-}
-.halo-watch-meta { display: flex; flex-direction: column; gap: 4px; }
-.halo-watch-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.halo-watch-sub { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
-.halo-progress-bar { width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
-.halo-progress-bar div { height: 100%; background: var(--aurora); border-radius: 4px; }
-.halo-progress-bar-thin { height: 3px; margin-top: 6px; }
-
-.halo-list-card { padding: 4px; cursor: default; }
-.halo-chat-row { display: flex; align-items: center; gap: 12px; padding: 11px 10px; border-radius: 14px; cursor: pointer; transition: background 0.15s ease; }
-.halo-chat-row:hover { background: rgba(255,255,255,0.03); }
-.halo-chat-meta { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px; }
-.halo-chat-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
-.halo-chat-msg { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.halo-chat-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
-.halo-chat-time { font-size: 10.5px; color: var(--text-tertiary); }
-.halo-unread-dot { min-width: 8px; height: 8px; padding: 0 3px; border-radius: 8px; background: var(--aurora); color: #0A0A0F; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-
-.halo-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.halo-study-mini, .halo-ai-mini { display: flex; align-items: center; gap: 11px; padding: 14px; cursor: pointer; }
-.halo-mini-label { display: block; font-size: 10.5px; color: var(--text-tertiary); font-weight: 500; }
-.halo-mini-value { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-top: 1px; font-family: var(--font-mono); }
-.halo-mini-streak { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--accent-amber); margin-top: 4px; }
-
-.halo-search-bar { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border-radius: 14px; background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-tertiary); font-size: 13px; }
-.halo-search-bar input { flex: 1; background: none; border: none; color: var(--text-primary); font-size: 13px; outline: none; }
-.halo-search-bar input::placeholder { color: var(--text-tertiary); }
-.halo-fab-inline { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border-radius: 16px; background: var(--aurora); border: none; color: #0A0A0F; font-weight: 600; font-size: 13.5px; cursor: pointer; }
-.halo-fab-inline:disabled { opacity: 0.5; cursor: default; }
-
-.halo-empty-screen { align-items: center; text-align: center; padding-top: 70px; gap: 14px; }
-.halo-empty-orb { width: 68px; height: 68px; border-radius: 50%; background: var(--glass-fill-strong); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); }
-.halo-empty-screen h2 { font-family: var(--font-display); font-size: 17px; margin: 0; }
-.halo-empty-screen p { font-size: 13px; color: var(--text-secondary); max-width: 260px; margin: 0; line-height: 1.5; }
-.halo-primary-btn { margin-top: 6px; padding: 12px 22px; border-radius: 100px; background: var(--aurora); border: none; color: #0A0A0F; font-weight: 600; font-size: 13.5px; cursor: pointer; }
-.halo-primary-btn:disabled { opacity: 0.5; cursor: default; }
-
-.halo-study-hero { display: flex; align-items: center; gap: 14px; padding: 16px; }
-.halo-subject-card { display: flex; align-items: center; gap: 12px; padding: 13px; cursor: pointer; }
-.halo-subject-icon { width: 38px; height: 38px; border-radius: 12px; background: var(--glass-fill-strong); display: flex; align-items: center; justify-content: center; color: var(--accent-violet); flex-shrink: 0; }
-.halo-subject-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-
-.halo-ai-screen { align-items: center; text-align: center; padding-top: 30px; }
-.halo-nova-hero { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.halo-nova-hero h2 { font-family: var(--font-display); font-size: 19px; margin: 4px 0 0; }
-.halo-nova-hero p { font-size: 13px; color: var(--text-secondary); max-width: 250px; margin: 0; line-height: 1.5; }
-.halo-nova-orb { position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.halo-nova-orb-core { position: absolute; inset: 14%; border-radius: 50%; background: var(--aurora); animation: novaPulse 3.2s ease-in-out infinite; }
-.halo-nova-orb-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(124,108,240,0.35); animation: novaSpin 12s linear infinite; }
-.halo-nova-orb-ring::before { content: ''; position: absolute; top: -2px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
-@keyframes novaPulse { 0%, 100% { transform: scale(1); opacity: 0.9; filter: blur(1px); } 50% { transform: scale(1.12); opacity: 1; filter: blur(2px); } }
-@keyframes novaSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.halo-suggest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; width: 100%; }
-.halo-suggest-chip { padding: 11px 10px; border-radius: 14px; background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 11.5px; text-align: left; cursor: pointer; }
-.halo-ask-bar { display: flex; align-items: center; gap: 9px; width: 100%; padding: 13px 14px; border-radius: 100px; background: var(--glass-fill-strong); border: 1px solid var(--glass-border); color: var(--text-tertiary); font-size: 13px; margin-top: 4px; }
-.halo-ask-bar span { flex: 1; text-align: left; }
-.halo-ask-send { width: 30px; height: 30px; border-radius: 50%; background: var(--aurora); border: none; display: flex; align-items: center; justify-content: center; color: #0A0A0F; cursor: pointer; flex-shrink: 0; }
-
-.halo-profile-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 10px 0 4px; }
-.halo-profile-hero h2 { font-family: var(--font-display); font-size: 17px; margin: 8px 0 0; }
-.halo-profile-hero p { font-size: 12.5px; color: var(--text-secondary); margin: 0; }
-.halo-profile-stats { display: flex; gap: 22px; margin-top: 14px; }
-.halo-profile-stats div { display: flex; flex-direction: column; align-items: center; font-size: 10.5px; color: var(--text-tertiary); font-weight: 500; gap: 3px; }
-.halo-profile-stats span { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--text-primary); }
-.halo-settings-row { display: flex; align-items: center; gap: 12px; padding: 13px 12px; border-radius: 14px; cursor: pointer; color: var(--text-secondary); font-size: 13px; }
-.halo-settings-row:hover { background: rgba(255,255,255,0.03); color: var(--text-primary); }
-.halo-settings-row span { flex: 1; }
-.halo-danger-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border-radius: 16px; background: transparent; border: 1px solid rgba(242,103,142,0.25); color: var(--accent-rose); font-weight: 500; font-size: 13px; cursor: pointer; }
-
-.halo-navbar { position: relative; display: flex; align-items: center; justify-content: space-around; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(13,14,20,0.85); backdrop-filter: blur(16px); border-top: 1px solid var(--glass-border); }
-.halo-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--text-tertiary); font-size: 9.5px; font-weight: 500; cursor: pointer; padding: 4px 8px; transition: color 0.15s ease, transform 0.15s ease; }
-.halo-nav-item:active { transform: scale(0.9); }
-.halo-nav-item.is-active { color: var(--text-primary); }
-.halo-nav-item.is-active svg { filter: drop-shadow(0 0 5px rgba(124,108,240,0.6)); color: var(--accent-cyan); }
-.halo-fab { width: 52px; height: 52px; border-radius: 50%; margin-top: -26px; background: var(--aurora); border: 3px solid var(--bg); display: flex; align-items: center; justify-content: center; color: #0A0A0F; box-shadow: 0 8px 20px -4px rgba(124,108,240,0.55); cursor: pointer; transition: transform 0.15s ease; }
-.halo-fab:active { transform: scale(0.92); }
-
-/* Auth screens */
-.halo-auth-screen { flex: 1; display: flex; flex-direction: column; padding: 36px 22px 28px; overflow-y: auto; }
-.halo-auth-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
-.halo-auth-orb { width: 34px; height: 34px; border-radius: 50%; background: var(--aurora); flex-shrink: 0; }
-.halo-auth-brand span { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
-.halo-auth-title { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0 0 4px; }
-.halo-auth-sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 26px; }
-.halo-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.halo-field label { font-size: 11.5px; color: var(--text-tertiary); font-weight: 500; }
-.halo-field input {
-  padding: 13px 14px; border-radius: 14px; background: var(--glass-fill); border: 1px solid var(--glass-border);
-  color: var(--text-primary); font-size: 14px; outline: none; transition: border-color 0.15s ease;
-}
-.halo-field input::placeholder { color: var(--text-tertiary); }
-.halo-field input:focus { border-color: var(--accent-violet); }
-.halo-field-hint { font-size: 11px; color: var(--text-tertiary); }
-.halo-field-hint.is-good { color: var(--accent-green); }
-.halo-field-hint.is-bad { color: var(--accent-rose); }
-.halo-auth-error { padding: 11px 14px; border-radius: 12px; background: rgba(242,103,142,0.1); border: 1px solid rgba(242,103,142,0.25); color: var(--accent-rose); font-size: 12.5px; margin-bottom: 14px; }
-.halo-auth-note { padding: 11px 14px; border-radius: 12px; background: rgba(47,232,208,0.08); border: 1px solid rgba(47,232,208,0.2); color: var(--accent-cyan); font-size: 12.5px; margin-bottom: 14px; }
-.halo-photo-picker { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-.halo-photo-picker-circle {
-  width: 64px; height: 64px; border-radius: 50%; background: var(--glass-fill-strong); border: 1px dashed var(--glass-border);
-  display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); overflow: hidden; flex-shrink: 0; cursor: pointer;
-}
-.halo-photo-picker-circle img { width: 100%; height: 100%; object-fit: cover; }
-.halo-photo-picker-text { font-size: 12px; color: var(--text-secondary); }
-.halo-auth-submit { width: 100%; padding: 14px; border-radius: 100px; background: var(--aurora); border: none; color: #0A0A0F; font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 6px; }
-.halo-auth-submit:disabled { opacity: 0.5; cursor: default; }
-.halo-auth-switch { text-align: center; margin-top: 20px; font-size: 12.5px; color: var(--text-secondary); }
-.halo-auth-switch button { background: none; border: none; color: var(--accent-cyan); font-weight: 600; cursor: pointer; padding: 0; font-size: 12.5px; }
-.halo-auth-forgot { text-align: right; margin: -8px 0 14px; }
-.halo-auth-forgot button { background: none; border: none; color: var(--text-tertiary); font-size: 11.5px; cursor: pointer; padding: 0; }
-
-/* Search + requests */
-.halo-result-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 26px 18px; }
-.halo-result-card h3 { font-family: var(--font-display); font-size: 16px; margin: 6px 0 0; }
-.halo-result-card p { font-size: 12.5px; color: var(--text-tertiary); margin: 0; }
-.halo-request-row { display: flex; align-items: center; gap: 12px; padding: 12px 10px; }
-.halo-request-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.halo-btn-small { padding: 8px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; }
-.halo-btn-small.is-accept { background: var(--aurora); color: #0A0A0F; }
-.halo-btn-small.is-reject { background: var(--glass-fill-strong); color: var(--text-secondary); border: 1px solid var(--glass-border); }
-.halo-btn-small.is-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--glass-border); }
-.halo-btn-small.is-outline:disabled { opacity: 0.6; cursor: default; }
-.halo-btn-small.is-friends { background: rgba(61,220,132,0.12); color: var(--accent-green); border: 1px solid rgba(61,220,132,0.25); cursor: default; }
-
-/* Chat room */
-.halo-chatroom { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.halo-chatroom-header { display: flex; align-items: center; gap: 11px; padding: 16px 18px 12px; border-bottom: 1px solid var(--glass-border); }
-.halo-back-btn { width: 32px; height: 32px; border-radius: 10px; background: var(--glass-fill); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; flex-shrink: 0; }
-.halo-chatroom-meta { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; }
-.halo-chatroom-meta strong { font-size: 14px; font-weight: 600; }
-.halo-chatroom-meta span { font-size: 11px; color: var(--text-tertiary); }
-.halo-messages { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
-.halo-msg-row { display: flex; }
-.halo-msg-row.is-mine { justify-content: flex-end; }
-.halo-bubble { max-width: 76%; padding: 10px 13px; border-radius: 16px; font-size: 13.5px; line-height: 1.4; }
-.halo-msg-row.is-mine .halo-bubble { background: var(--aurora); color: #0A0A0F; border-bottom-right-radius: 5px; }
-.halo-msg-row:not(.is-mine) .halo-bubble { background: var(--glass-fill-strong); border: 1px solid var(--glass-border); border-bottom-left-radius: 5px; }
-.halo-msg-meta { display: flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 10px; color: var(--text-tertiary); }
-.halo-msg-row.is-mine .halo-msg-meta { justify-content: flex-end; }
-.halo-msg-ticks.is-seen { color: var(--accent-cyan); }
-.halo-composer { display: flex; align-items: center; gap: 9px; padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--glass-border); background: rgba(13,14,20,0.6); }
-.halo-composer input { flex: 1; padding: 12px 15px; border-radius: 100px; background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-primary); font-size: 13.5px; outline: none; }
-.halo-composer input::placeholder { color: var(--text-tertiary); }
-.halo-composer button { width: 38px; height: 38px; border-radius: 50%; background: var(--aurora); border: none; display: flex; align-items: center; justify-content: center; color: #0A0A0F; cursor: pointer; flex-shrink: 0; }
-.halo-composer button:disabled { opacity: 0.4; cursor: default; }
-
-@media (prefers-reduced-motion: reduce) {
-  .halo-root *, .halo-root *::before, .halo-root *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-}
+.halo-icon-btn:active { transform: scale(0.88); }
+.halo-icon-btn:hover { color: var(--text-primary); background: var(--glass-fill-strong); box-shadow: var(--glow-violet); }
+.halo-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; ba
