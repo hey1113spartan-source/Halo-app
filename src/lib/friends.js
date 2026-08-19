@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase.js";
 import { pairId } from "./ids.js";
+import { createNotification } from "./notifications.js";
 
 function requestRef(uidA, uidB) {
   return doc(db, "friendRequests", pairId(uidA, uidB));
@@ -46,6 +47,15 @@ export async function sendFriendRequest(fromUid, toUid) {
     createdAt: serverTimestamp(),
     respondedAt: null,
   });
+
+  const fromSnap = await getDoc(doc(db, "users", fromUid));
+  const fromData = fromSnap.exists() ? fromSnap.data() : null;
+  await createNotification(toUid, {
+    type: "friend_request",
+    fromUid,
+    fromName: fromData?.fullName,
+    fromPhotoURL: fromData?.photoURL,
+  });
 }
 
 export async function cancelFriendRequest(fromUid, toUid) {
@@ -57,14 +67,14 @@ export async function respondToRequest(requestDoc, accept) {
   const ref = doc(db, "friendRequests", pairId(fromUid, toUid));
   const batch = writeBatch(db);
 
-  if (accept) {
-    const [fromProfile, toProfile] = await Promise.all([
-      getDoc(doc(db, "users", fromUid)),
-      getDoc(doc(db, "users", toUid)),
-    ]);
-    const fromData = fromProfile.data();
-    const toData = toProfile.data();
+  const [fromProfile, toProfile] = await Promise.all([
+    getDoc(doc(db, "users", fromUid)),
+    getDoc(doc(db, "users", toUid)),
+  ]);
+  const fromData = fromProfile.data();
+  const toData = toProfile.data();
 
+  if (accept) {
     batch.update(ref, { status: "accepted", respondedAt: serverTimestamp() });
     batch.set(doc(db, "users", toUid, "friends", fromUid), {
       uid: fromUid,
@@ -85,6 +95,15 @@ export async function respondToRequest(requestDoc, accept) {
   }
 
   await batch.commit();
+
+  if (accept) {
+    await createNotification(fromUid, {
+      type: "friend_accepted",
+      fromUid: toUid,
+      fromName: toData?.fullName,
+      fromPhotoURL: toData?.photoURL,
+    });
+  }
 }
 
 export async function removeFriend(myUid, friendUid) {
