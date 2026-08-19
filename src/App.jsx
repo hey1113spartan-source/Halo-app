@@ -11,6 +11,7 @@ import ProfileScreen from "./screens/ProfileScreen.jsx";
 import { AiScreen, StudyScreen, WatchScreen } from "./screens/PlaceholderScreens.jsx";
 import { listenFriends, listenIncomingRequests, listenOutgoingRequests } from "./lib/friends.js";
 import { listenUserChats } from "./lib/chat.js";
+import { listenNotifications } from "./lib/notifications.js";
 
 const TABS = [
   { id: "home", label: "Home", icon: HomeIcon },
@@ -25,16 +26,20 @@ const TITLES = { chat: "Chats", watch: "Watch Together", study: "Study", ai: "No
 
 function MainApp({ user, profile, onLogOut }) {
   const [tab, setTab] = useState("home");
-  const [overlay, setOverlay] = useState(null);
+  const [overlay, setOverlay] = useState(null); // null | 'search' | 'requests' | { type: 'chatroom', friend }
   const [friends, setFriends] = useState([]);
   const [chats, setChats] = useState([]);
   const [incoming, setIncoming] = useState([]);
   const [outgoing, setOutgoing] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => listenFriends(user.uid, setFriends), [user.uid]);
   useEffect(() => listenUserChats(user.uid, setChats), [user.uid]);
   useEffect(() => listenIncomingRequests(user.uid, setIncoming), [user.uid]);
   useEffect(() => listenOutgoingRequests(user.uid, setOutgoing), [user.uid]);
+  useEffect(() => listenNotifications(user.uid, setNotifications), [user.uid]);
+
+  const unreadNotifCount = notifications.filter((n) => !n.read).length;
 
   function openChat(friend) {
     setOverlay({ type: "chatroom", friend });
@@ -59,6 +64,7 @@ function MainApp({ user, profile, onLogOut }) {
         myUid={user.uid}
         incomingRequests={incoming}
         outgoingRequests={outgoing}
+        notifications={notifications}
         onBack={() => setOverlay(null)}
       />
     );
@@ -70,7 +76,7 @@ function MainApp({ user, profile, onLogOut }) {
 
   return (
     <>
-      <TopBar tab={tab} title={TITLES[tab]} profile={profile} onSearch={() => setOverlay("search")} onBell={() => setOverlay("requests")} bellCount={incoming.length} />
+      <TopBar tab={tab} title={TITLES[tab]} profile={profile} onSearch={() => setOverlay("search")} onBell={() => setOverlay("requests")} bellCount={incoming.length + unreadNotifCount} />
       <main className="halo-main" key={tab}>
         {tab === "home" && (
           <HomeScreenReal
