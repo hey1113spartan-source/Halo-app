@@ -3,8 +3,10 @@ import { ArrowLeft } from "lucide-react";
 import { Avatar, GlassCard, SectionHeader } from "../components/ui.jsx";
 import { cancelFriendRequest, respondToRequest } from "../lib/friends.js";
 import { getUserProfile } from "../lib/users.js";
+import { markAllNotificationsRead } from "../lib/notifications.js";
+import { relativeTime } from "../lib/format.js";
 
-export default function RequestsScreen({ myUid, incomingRequests, outgoingRequests, onBack }) {
+export default function RequestsScreen({ myUid, incomingRequests, outgoingRequests, notifications, onBack }) {
   const [outgoingProfiles, setOutgoingProfiles] = useState({});
   const [busyId, setBusyId] = useState(null);
 
@@ -20,6 +22,12 @@ export default function RequestsScreen({ myUid, incomingRequests, outgoingReques
       cancelled = true;
     };
   }, [outgoingRequests]);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      markAllNotificationsRead(myUid, notifications);
+    }
+  }, [myUid, notifications]);
 
   async function handleRespond(request, accept) {
     setBusyId(request.id);
@@ -39,6 +47,12 @@ export default function RequestsScreen({ myUid, incomingRequests, outgoingReques
     }
   }
 
+  function notifText(n) {
+    if (n.type === "friend_request") return `${n.fromName} sent you a friend request`;
+    if (n.type === "friend_accepted") return `${n.fromName} accepted your friend request`;
+    return `${n.fromName} sent you a message`;
+  }
+
   return (
     <div className="halo-screen">
       <div className="halo-chatroom-header" style={{ padding: "2px 0 4px", border: "none" }}>
@@ -46,13 +60,13 @@ export default function RequestsScreen({ myUid, incomingRequests, outgoingReques
           <ArrowLeft size={16} />
         </button>
         <div className="halo-chatroom-meta">
-          <strong>Friend requests</strong>
-          <span>{incomingRequests.length} waiting for you</span>
+          <strong>Notifications</strong>
+          <span>{incomingRequests.length} requests waiting</span>
         </div>
       </div>
 
       <section>
-        <SectionHeader title="Received" />
+        <SectionHeader title="Friend requests" />
         {incomingRequests.length === 0 ? (
           <p style={{ color: "var(--text-tertiary)", fontSize: 13 }}>No requests right now.</p>
         ) : (
@@ -101,6 +115,25 @@ export default function RequestsScreen({ myUid, incomingRequests, outgoingReques
                 </div>
               );
             })}
+          </GlassCard>
+        )}
+      </section>
+
+      <section>
+        <SectionHeader title="Recent activity" />
+        {notifications.length === 0 ? (
+          <p style={{ color: "var(--text-tertiary)", fontSize: 13 }}>Nothing yet.</p>
+        ) : (
+          <GlassCard className="halo-list-card">
+            {notifications.map((n) => (
+              <div className="halo-chat-row" key={n.id} style={{ opacity: n.read ? 0.65 : 1 }}>
+                <Avatar name={n.fromName} photoURL={n.fromPhotoURL} size={38} />
+                <div className="halo-chat-meta">
+                  <span className="halo-chat-msg" style={{ color: "var(--text-primary)" }}>{notifText(n)}</span>
+                </div>
+                <span className="halo-chat-time">{relativeTime(n.createdAt)}</span>
+              </div>
+            ))}
           </GlassCard>
         )}
       </section>
